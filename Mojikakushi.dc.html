@@ -200,7 +200,7 @@ class Component extends DCLogic {
       sub: 'もじかくし — 検索よけ・翻訳よけテキストメーカー',
       inputLabel: '入力テキスト', clearLabel: 'クリア', placeholder: 'ここにテキストを入れてね',
       invBadge: '不可視文字 {n}個入り', removeLabel: 'ゼロ幅スペースを削除', noInvLabel: '不可視文字なし ✓',
-      chars: '{n}文字', intervalLabel: '挿入間隔', seg1: '全文字間', seg2: '2文字ごと',
+      chars: '{n}文字', intervalLabel: '挿入間隔', seg1: '全文字間', seg2: 'ランダム',
       exclLabel: '除外オプション', chipSpace: 'スペース前後は入れない', chipUrl: 'URLには入れない', chipHash: 'ハッシュタグには入れない',
       convertLabel: '変換する ✦', resultLabel: '変換結果', visOff: '不可視を表示', visOn: '不可視を表示中 ·',
       emptyLabel: 'ここに変換結果が表示されます', resultCount: '{n}文字 ＋ 不可視 {m}個',
@@ -213,7 +213,7 @@ class Component extends DCLogic {
       sub: 'Mojikakushi — anti-search / anti-translate text maker',
       inputLabel: 'INPUT TEXT', clearLabel: 'Clear', placeholder: 'Paste your text here',
       invBadge: '{n} invisible chars inside', removeLabel: 'Remove zero-width spaces', noInvLabel: 'No invisible chars ✓',
-      chars: '{n} chars', intervalLabel: 'INSERTION INTERVAL', seg1: 'Between every char', seg2: 'Every 2 chars',
+      chars: '{n} chars', intervalLabel: 'INSERTION INTERVAL', seg1: 'Between every char', seg2: 'Random',
       exclLabel: 'EXCLUSIONS', chipSpace: 'Skip around spaces', chipUrl: 'Skip URLs', chipHash: 'Skip hashtags',
       convertLabel: 'Convert ✦', resultLabel: 'RESULT', visOff: 'Show invisibles', visOn: 'Showing invisibles ·',
       emptyLabel: 'Your converted text will appear here', resultCount: '{n} chars ＋ {m} invisible',
@@ -226,7 +226,7 @@ class Component extends DCLogic {
       sub: '모지카쿠시 — 검색·번역 회피 텍스트 메이커',
       inputLabel: '입력 텍스트', clearLabel: '지우기', placeholder: '여기에 텍스트를 입력하세요',
       invBadge: '보이지 않는 문자 {n}개 포함', removeLabel: '제로 폭 공백 제거', noInvLabel: '보이지 않는 문자 없음 ✓',
-      chars: '{n}자', intervalLabel: '삽입 간격', seg1: '모든 문자 사이', seg2: '2문자마다',
+      chars: '{n}자', intervalLabel: '삽입 간격', seg1: '모든 문자 사이', seg2: '랜덤',
       exclLabel: '제외 옵션', chipSpace: '공백 앞뒤 제외', chipUrl: 'URL 제외', chipHash: '해시태그 제외',
       convertLabel: '변환하기 ✦', resultLabel: '변환 결과', visOff: '비가시 문자 표시', visOn: '표시 중 ·',
       emptyLabel: '변환 결과가 여기에 표시됩니다', resultCount: '{n}자 ＋ 비가시 {m}개',
@@ -239,7 +239,7 @@ class Component extends DCLogic {
       sub: '文字隐藏 — 防搜索·防翻译文本生成器',
       inputLabel: '输入文本', clearLabel: '清空', placeholder: '在这里输入文本',
       invBadge: '含 {n} 个不可见字符', removeLabel: '删除零宽空格', noInvLabel: '无不可见字符 ✓',
-      chars: '{n}字', intervalLabel: '插入间隔', seg1: '每个字符之间', seg2: '每2个字符',
+      chars: '{n}字', intervalLabel: '插入间隔', seg1: '每个字符之间', seg2: '随机',
       exclLabel: '排除选项', chipSpace: '空格前后不插入', chipUrl: '不插入URL', chipHash: '不插入话题标签',
       convertLabel: '转换 ✦', resultLabel: '转换结果', visOff: '显示不可见字符', visOn: '显示中 ·',
       emptyLabel: '转换结果将显示在这里', resultCount: '{n}字 ＋ 不可见 {m}个',
@@ -275,23 +275,70 @@ class Component extends DCLogic {
     return parts;
   }
 
+  canInsertAfter(cps, i, exclSpace, allowTail = false) {
+    const cur = cps[i];
+    const nxt = cps[i + 1];
+    const ws = /\s/;
+    const joinNext = /[\u200C\u200D\uFE0F\p{M}]/u;
+    if (i === cps.length - 1) return allowTail && !ws.test(cur);
+    if (exclSpace && (ws.test(cur) || ws.test(nxt))) return false;
+    if (joinNext.test(nxt) || cur === '\u200D' || cur === '\u200C') return false;
+    return true;
+  }
+
   insertZW(seg, interval, exclSpace, ZW) {
     const cps = Array.from(seg);
     let out = '', run = 0;
     const ws = /\s/;
-    const joinNext = /[\u200C\u200D\uFE0F\p{M}]/u;
     for (let i = 0; i < cps.length; i++) {
       const cur = cps[i];
       out += cur;
       if (i === cps.length - 1) break;
-      const nxt = cps[i + 1];
-      if (ws.test(cur)) { run = 0; if (exclSpace) continue; }
-      if (exclSpace && ws.test(nxt)) continue;
-      if (joinNext.test(nxt) || cur === '\u200D' || cur === '\u200C') continue;
+      if (ws.test(cur)) run = 0;
+      if (!this.canInsertAfter(cps, i, exclSpace)) continue;
       run++;
-      if (run >= interval) { out += ZW; run = 0; }
+      if (run >= interval) {
+        out += ZW;
+        run = 0;
+      }
     }
     return out;
+  }
+
+  insertRandomZW(parts, exclSpace, ZW) {
+    const slots = [];
+    const tailSlots = [];
+    let charCount = 0;
+    const cpsByPart = parts.map((part, partIndex) => {
+      if (part.p) return null;
+      const cps = Array.from(part.t);
+      charCount += cps.length;
+      for (let i = 0; i < cps.length; i++) {
+        if (this.canInsertAfter(cps, i, exclSpace)) slots.push({ partIndex, i });
+        else if (this.canInsertAfter(cps, i, exclSpace, true)) tailSlots.push({ partIndex, i });
+      }
+      return cps;
+    });
+    const pool = slots.length ? slots : tailSlots;
+    if (!pool.length) return parts.map((p) => p.t).join('');
+    const target = Math.min(pool.length, Math.max(1, Math.round(charCount * 0.33)));
+    const picked = new Set();
+    const candidates = pool.slice();
+    for (let n = 0; n < target; n++) {
+      const idx = Math.floor(Math.random() * candidates.length);
+      const slot = candidates.splice(idx, 1)[0];
+      picked.add(slot.partIndex + ':' + slot.i);
+    }
+    return parts.map((part, partIndex) => {
+      if (part.p) return part.t;
+      const cps = cpsByPart[partIndex] || [];
+      let out = '';
+      for (let i = 0; i < cps.length; i++) {
+        out += cps[i];
+        if (picked.has(partIndex + ':' + i)) out += ZW;
+      }
+      return out;
+    }).join('');
   }
 
   convert = () => {
@@ -301,7 +348,8 @@ class Component extends DCLogic {
     const clean = s.text.replace(this.invRe(), '');
     const parts = this.buildParts(clean, s.exclUrl, s.exclHash);
     let out = '';
-    for (const p of parts) out += p.p ? p.t : this.insertZW(p.t, s.interval, s.exclSpace, ZW);
+    if (s.interval === 'random') out = this.insertRandomZW(parts, s.exclSpace, ZW);
+    else for (const p of parts) out += p.p ? p.t : this.insertZW(p.t, s.interval, s.exclSpace, ZW);
     this.setState({ result: out, copied: false });
   };
 
@@ -353,7 +401,7 @@ class Component extends DCLogic {
       };
     });
 
-    const segs = [{ v: 1, label: t.seg1 }, { v: 2, label: t.seg2 }].map((o) => {
+    const segs = [{ v: 1, label: t.seg1 }, { v: 'random', label: t.seg2 }].map((o) => {
       const on = s.interval === o.v;
       return {
         label: o.label,
