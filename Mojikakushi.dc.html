@@ -91,11 +91,10 @@
         animation: mkPageIn .42s cubic-bezier(.2, .8, .2, 1) backwards;
       }
 
-      [data-screen-label="Mojikakushi"] > div > div {
+      [data-screen-label="Mojikakushi"] > div > div:not(:first-child) {
         animation: mkPanelIn .46s cubic-bezier(.2, .8, .2, 1) backwards;
       }
 
-      [data-screen-label="Mojikakushi"] > div > div:nth-child(1) { animation-delay: .02s; }
       [data-screen-label="Mojikakushi"] > div > div:nth-child(2) { animation-delay: .08s; }
       [data-screen-label="Mojikakushi"] > div > div:nth-child(3) { animation-delay: .14s; }
       [data-screen-label="Mojikakushi"] > div > button { animation: mkPanelIn .46s .2s cubic-bezier(.2, .8, .2, 1) backwards; }
