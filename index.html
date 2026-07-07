@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mojikakushi</title>
 <meta name="description" content="検索よけ・翻訳よけテキストメーカー">
+<link rel="canonical" href="https://moji-kakushi.rweb.site/">
 <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
 <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
 <meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#FBF4EC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mojikakushi">
 <meta property="og:title" content="Mojikakushi">
@@ -22,6 +24,7 @@
 <meta property="og:image:alt" content="Mojikakushi - 検索よけ・翻訳よけテキストメーカー">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://moji-kakushi.rweb.site/">
+<meta name="twitter:domain" content="moji-kakushi.rweb.site">
 <meta name="twitter:title" content="Mojikakushi">
 <meta name="twitter:description" content="検索よけ・翻訳よけテキストメーカー">
 <meta name="twitter:image" content="https://moji-kakushi.rweb.site/assets/x-card-clean-v5.jpg">
@@ -30,10 +33,45 @@
 <style>
   body { margin: 0; background: #FBF4EC; }
   x-dc { display: none !important; }
+  .mk-noscript-social {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    padding: 24px;
+    color: #4A3F3A;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  .mk-noscript-social__inner {
+    width: min(92vw, 760px);
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+  }
+  .mk-noscript-social img {
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+    box-shadow: 0 18px 55px rgba(74, 63, 58, .14);
+  }
+  .mk-noscript-social a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration-thickness: .08em;
+    text-underline-offset: .16em;
+  }
 </style>
 <script src="./support.js"></script>
 </head>
 <body>
+<noscript>
+  <main class="mk-noscript-social">
+    <div class="mk-noscript-social__inner">
+      <img src="/assets/x-card-clean-v5.jpg" alt="Mojikakushi">
+      <a href="https://moji-kakushi.rweb.site/">Mojikakushi を開く</a>
+    </div>
+  </main>
+</noscript>
 <x-dc>
 <helmet>
   <meta name="viewport" content="width=device-width, initial-scale=1">
