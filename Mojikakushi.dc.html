@@ -3,6 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mojikakushi</title>
+<meta name="description" content="検索よけ・翻訳よけテキストメーカー">
+<link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mojikakushi">
+<meta property="og:description" content="検索よけ・翻訳よけテキストメーカー">
+<meta property="og:url" content="https://moji-kakushi.rweb.site/">
+<meta property="og:image" content="https://moji-kakushi.rweb.site/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -15,19 +26,22 @@
   <style>
     body { margin: 0; background: #FBF4EC; }
     textarea:focus { outline: none; }
+    @media (max-width: 480px) {
+      .mk-lang-switch { margin-left: 0 !important; width: 100%; overflow-x: auto; }
+      .mk-lang-switch button { flex: 0 0 auto; }
+    }
     @keyframes mkPop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </helmet>
 <div data-screen-label="Mojikakushi" style="min-height: 100vh; background: #FBF4EC; font-family: 'Zen Maru Gothic', sans-serif; color: #4A3F3A; -webkit-font-smoothing: antialiased;">
-  <div style="max-width: 560px; margin: 0 auto; padding: 30px 18px 44px; display: flex; flex-direction: column; gap: 16px;">
+  <div style="width: calc(100vw - 36px); max-width: 560px; box-sizing: border-box; margin: 0 auto; padding: 30px 0 44px; display: flex; flex-direction: column; gap: 16px;">
 
     <div style="display: flex; align-items: center; gap: 13px; padding: 2px 4px 6px; flex-wrap: wrap; row-gap: 10px;">
-      <div style="width: 46px; height: 46px; border-radius: 16px; background: {{ accent }}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 22px; font-weight: 900; box-shadow: 0 3px 0 rgba(90, 50, 60, 0.18); flex-shrink: 0;">文</div>
-      <div style="display: flex; flex-direction: column; gap: 2px;">
-        <div style="font-size: 23px; font-weight: 900; letter-spacing: 0.02em; line-height: 1;">Mojikakushi</div>
+      <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+        <img src="./assets/logo.svg" alt="Mojikakushi" width="238" height="82" style="width: min(238px, calc(100vw - 48px)); height: auto; display: block;">
         <div style="font-size: 11.5px; color: #A08D80; font-weight: 500;">{{ sub }}</div>
       </div>
-      <div style="margin-left: auto; display: flex; gap: 3px; background: #F5EBE0; border-radius: 999px; padding: 3px;">
+      <div class="mk-lang-switch" style="display: flex; flex: 0 0 100%; width: max-content; gap: 3px; background: #F5EBE0; border-radius: 999px; padding: 3px; max-width: 100%; overflow-x: auto;">
         <sc-for list="{{ langBtns }}" as="l" hint-placeholder-count="4">
           <button onClick="{{ l.pick }}" style="border: none; border-radius: 999px; padding: 6px 10px; font-family: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; background: {{ l.bg }}; color: {{ l.fg }}; box-shadow: {{ l.sh }};">{{ l.label }}</button>
         </sc-for>
@@ -58,7 +72,7 @@
       <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #A08D80;">{{ intervalLabel }}</div>
       <div style="display: flex; gap: 4px; background: #F5EBE0; border-radius: 999px; padding: 4px;">
         <sc-for list="{{ segs }}" as="o" hint-placeholder-count="2">
-          <button onClick="{{ o.pick }}" style="flex: 1; border: none; border-radius: 999px; padding: 9px 8px; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; background: {{ o.bg }}; color: {{ o.fg }}; box-shadow: {{ o.sh }};">{{ o.label }}</button>
+          <button onClick="{{ o.pick }}" style="flex: 1; min-width: 0; border: none; border-radius: 999px; padding: 9px 8px; font-family: inherit; font-size: 13.5px; line-height: 1.35; font-weight: 700; cursor: pointer; background: {{ o.bg }}; color: {{ o.fg }}; box-shadow: {{ o.sh }}; white-space: normal;">{{ o.label }}</button>
         </sc-for>
       </div>
       <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #A08D80; margin-top: 4px;">{{ exclLabel }}</div>
@@ -100,7 +114,6 @@
         <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.6; color: #A08D80; text-align: center;">{{ supportLabel }}</div>
         <div style="display: flex; gap: 10px;">
           <a href="https://ko-fi.com/nutsfox" target="_blank" rel="noopener" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; background: #FFFFFF; border: 1.5px solid #F0E2D6; border-radius: 16px; padding: 12px 10px; font-size: 13.5px; font-weight: 700; color: #4A3F3A; box-shadow: 0 2px 8px rgba(120, 85, 60, 0.05);" style-hover="border-color: #FF5E5B;"><span style="color: #FF5E5B; font-size: 15px;">♥</span> {{ kofiLabel }}</a>
-          <a href="https://paypal.me/TrianonHFFF" target="_blank" rel="noopener" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; background: #FFFFFF; border: 1.5px solid #F0E2D6; border-radius: 16px; padding: 12px 10px; font-size: 13.5px; font-weight: 700; color: #4A3F3A; box-shadow: 0 2px 8px rgba(120, 85, 60, 0.05);" style-hover="border-color: #0070BA;"><span style="color: #0070BA; font-weight: 900;">P</span> {{ paypalLabel }}</a>
         </div>
       </div>
     </sc-if>
@@ -132,13 +145,13 @@ class Component extends DCLogic {
       sub: 'もじかくし — 検索よけ・翻訳よけテキストメーカー',
       inputLabel: '入力テキスト', clearLabel: 'クリア', placeholder: 'ここにテキストを入れてね',
       invBadge: '不可視文字 {n}個入り', removeLabel: 'ゼロ幅スペースを削除', noInvLabel: '不可視文字なし ✓',
-      chars: '{n}文字', intervalLabel: '挿入間隔', seg1: '全文字間に挿入', seg2: '2文字ごとに挿入',
+      chars: '{n}文字', intervalLabel: '挿入間隔', seg1: '全文字間', seg2: '2文字ごと',
       exclLabel: '除外オプション', chipSpace: 'スペース前後は入れない', chipUrl: 'URLには入れない', chipHash: 'ハッシュタグには入れない',
       convertLabel: '変換する ✦', resultLabel: '変換結果', visOff: '不可視を表示', visOn: '不可視を表示中 ·',
       emptyLabel: 'ここに変換結果が表示されます', resultCount: '{n}文字 ＋ 不可視 {m}個',
       copy: 'コピーする', copied: 'コピーしました ✓',
       noticeLabel: 'ご利用にあたって', noticeText: 'このツールは完全な検索回避・翻訳回避を保証するものではありません。各サービスの利用規約に従って使用してください。',
-      supportLabel: '便利だったら、今後の小さなツール制作費に投げてもらえるとうれしいです', kofiLabel: 'Ko-fi で支援', paypalLabel: 'PayPal で支援',
+      supportLabel: '便利だったら、今後の小さなツール制作費に投げてもらえるとうれしいです', kofiLabel: 'Ko-fi で支援',
       footerText: '入力内容はブラウザ内で処理され、サーバーには送信されません。',
     },
     en: {
@@ -151,7 +164,7 @@ class Component extends DCLogic {
       emptyLabel: 'Your converted text will appear here', resultCount: '{n} chars ＋ {m} invisible',
       copy: 'Copy', copied: 'Copied ✓',
       noticeLabel: 'PLEASE NOTE', noticeText: 'This tool does not guarantee complete evasion of search indexing or machine translation. Use it in accordance with each service\u2019s terms.',
-      supportLabel: 'IF THIS TOOL HELPED YOU', kofiLabel: 'Support on Ko-fi', paypalLabel: 'Support via PayPal',
+      supportLabel: 'IF THIS TOOL HELPED YOU', kofiLabel: 'Support on Ko-fi',
       footerText: 'Everything runs in your browser — nothing is sent to a server.',
     },
     ko: {
@@ -164,7 +177,7 @@ class Component extends DCLogic {
       emptyLabel: '변환 결과가 여기에 표시됩니다', resultCount: '{n}자 ＋ 비가시 {m}개',
       copy: '복사하기', copied: '복사됨 ✓',
       noticeLabel: '이용 안내', noticeText: '이 도구는 완전한 검색·번역 회피를 보장하지 않습니다. 각 서비스의 이용약관에 따라 사용해 주세요.',
-      supportLabel: '도움이 되었다면', kofiLabel: 'Ko-fi로 응원하기', paypalLabel: 'PayPal로 응원하기',
+      supportLabel: '도움이 되었다면', kofiLabel: 'Ko-fi로 응원하기',
       footerText: '입력 내용은 브라우저 내에서 처리되며 서버로 전송되지 않습니다.',
     },
     zh: {
@@ -177,7 +190,7 @@ class Component extends DCLogic {
       emptyLabel: '转换结果将显示在这里', resultCount: '{n}字 ＋ 不可见 {m}个',
       copy: '复制', copied: '已复制 ✓',
       noticeLabel: '使用须知', noticeText: '本工具不保证完全避开搜索或翻译。请遵守各服务的使用条款。',
-      supportLabel: '如果对你有帮助', kofiLabel: '通过 Ko-fi 支持', paypalLabel: '通过 PayPal 支持',
+      supportLabel: '如果对你有帮助', kofiLabel: '通过 Ko-fi 支持',
       footerText: '输入内容仅在浏览器内处理，不会发送到服务器。',
     },
   };
@@ -339,7 +352,6 @@ class Component extends DCLogic {
       noticeText: t.noticeText,
       supportLabel: t.supportLabel,
       kofiLabel: t.kofiLabel,
-      paypalLabel: t.paypalLabel,
       footerText: t.footerText,
       text: s.text,
       onInput: (e) => this.setState({ text: e.target.value }),
