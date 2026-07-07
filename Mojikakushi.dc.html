@@ -86,6 +86,78 @@
       .mk-lang-switch { right: calc(50vw - 258px) !important; }
     }
     @keyframes mkPop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: no-preference) {
+      [data-screen-label="Mojikakushi"] > div {
+        animation: mkPageIn .42s cubic-bezier(.2, .8, .2, 1) backwards;
+      }
+
+      [data-screen-label="Mojikakushi"] > div > div {
+        animation: mkPanelIn .46s cubic-bezier(.2, .8, .2, 1) backwards;
+      }
+
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(1) { animation-delay: .02s; }
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(2) { animation-delay: .08s; }
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(3) { animation-delay: .14s; }
+      [data-screen-label="Mojikakushi"] > div > button { animation: mkPanelIn .46s .2s cubic-bezier(.2, .8, .2, 1) backwards; }
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(5) { animation-delay: .26s; }
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(6) { animation-delay: .32s; }
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(7) { animation-delay: .38s; }
+      [data-screen-label="Mojikakushi"] > div > div:nth-child(8) { animation-delay: .44s; }
+
+      [data-screen-label="Mojikakushi"] img[alt="Mojikakushi"] {
+        animation: mkLogoIn .52s .05s cubic-bezier(.2, .8, .2, 1) backwards;
+      }
+
+      [data-screen-label="Mojikakushi"] button,
+      [data-screen-label="Mojikakushi"] a,
+      [data-screen-label="Mojikakushi"] textarea {
+        transition:
+          transform .16s ease,
+          box-shadow .16s ease,
+          border-color .16s ease,
+          background-color .16s ease,
+          color .16s ease,
+          opacity .16s ease;
+      }
+
+      [data-screen-label="Mojikakushi"] button:hover,
+      [data-screen-label="Mojikakushi"] a:hover {
+        transform: translateY(-1px);
+      }
+
+      [data-screen-label="Mojikakushi"] button:active,
+      [data-screen-label="Mojikakushi"] a:active {
+        transform: translateY(1px) scale(.99);
+      }
+
+      [data-screen-label="Mojikakushi"] textarea:focus {
+        transform: translateY(-1px);
+      }
+
+      .mk-animate-result {
+        animation: mkResultIn .28s cubic-bezier(.2, .8, .2, 1) backwards;
+      }
+    }
+
+    @keyframes mkPageIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes mkPanelIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes mkLogoIn {
+      from { opacity: 0; transform: translateY(4px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes mkResultIn {
+      from { opacity: .45; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </helmet>
 <div data-screen-label="Mojikakushi" style="min-height: 100vh; background: #FBF4EC; font-family: 'Zen Maru Gothic', sans-serif; color: #4A3F3A; -webkit-font-smoothing: antialiased;">
@@ -483,6 +555,46 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const rootReady = () => document.getElementById('dc-root');
+  const findResultBox = () => {
+    const root = rootReady();
+    if (!root) return null;
+    const boxes = Array.from(root.querySelectorAll('div')).filter((el) => {
+      const style = getComputedStyle(el);
+      return style.whiteSpace === 'pre-wrap' && style.wordBreak === 'break-word';
+    });
+    return boxes[boxes.length - 1] || null;
+  };
+
+  let lastText = '';
+  const pulseResult = () => {
+    const box = findResultBox();
+    if (!box) return;
+    const text = box.textContent || '';
+    if (!text || text === lastText) return;
+    lastText = text;
+    box.classList.remove('mk-animate-result');
+    void box.offsetWidth;
+    box.classList.add('mk-animate-result');
+  };
+
+  const observer = new MutationObserver(pulseResult);
+  const boot = () => {
+    const root = rootReady();
+    if (!root) {
+      requestAnimationFrame(boot);
+      return;
+    }
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    pulseResult();
+  };
+  boot();
+})();
 </script>
 </body>
 </html>
