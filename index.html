@@ -175,9 +175,12 @@
     </div>
 
     <div style="background: #FFFFFF; border: 1.5px solid #F0E2D6; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 10px rgba(120, 85, 60, 0.05);">
-      <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #A08D80;">{{ inputLabel }}</div>
-        <button onClick="{{ clearText }}" style="border: none; background: none; color: #C4B2A4; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 2px 6px;" style-hover="color: #A08D80;">{{ clearLabel }}</button>
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-left: auto;">
+          <span style="font-size: 10.5px; font-weight: 700; color: #C4B2A4; white-space: nowrap;">{{ inputCountText }}</span>
+          <button onClick="{{ clearText }}" style="border: none; background: none; color: #C4B2A4; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 2px 6px;" style-hover="color: #A08D80;">{{ clearLabel }}</button>
+        </div>
       </div>
       <textarea value="{{ text }}" onChange="{{ onInput }}" placeholder="{{ placeholder }}" rows="5" style="width: 100%; box-sizing: border-box; resize: vertical; min-height: 120px; border: 1.5px solid #EBDCCE; border-radius: 14px; background: #FFFDFA; padding: 12px 14px; font-family: inherit; font-size: 16px; line-height: 1.7; color: #4A3F3A;" style-focus="border-color: {{ accent }};"></textarea>
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
@@ -190,7 +193,6 @@
         <sc-if value="{{ noInvisibleInput }}" hint-placeholder-val="{{ true }}">
           <span style="font-size: 12px; font-weight: 500; color: #B8A797;">{{ noInvLabel }}</span>
         </sc-if>
-        <span style="font-size: 12px; font-weight: 700; color: #A08D80; margin-left: auto;">{{ inputLenText }}</span>
       </div>
     </div>
 
@@ -214,18 +216,18 @@
     <div style="background: #FFFFFF; border: 1.5px solid #F0E2D6; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 10px rgba(120, 85, 60, 0.05);">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #A08D80;">{{ resultLabel }}</div>
-        <sc-if value="{{ hasResult }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ toggleVisualize }}" style="border: 1.5px solid {{ visBd }}; background: {{ visBg }}; color: {{ visFg }}; font-family: inherit; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 4px 11px; cursor: pointer;">{{ visLabel }}</button>
-        </sc-if>
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-left: auto; flex-wrap: wrap;">
+          <span style="font-size: 10.5px; font-weight: 700; color: #C4B2A4; white-space: nowrap;">{{ resultCountText }}</span>
+          <sc-if value="{{ hasResult }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ toggleVisualize }}" style="border: 1.5px solid {{ visBd }}; background: {{ visBg }}; color: {{ visFg }}; font-family: inherit; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 4px 11px; cursor: pointer;">{{ visLabel }}</button>
+          </sc-if>
+        </div>
       </div>
       <sc-if value="{{ noResult }}" hint-placeholder-val="{{ true }}">
         <div style="border: 1.5px dashed #EBDCCE; border-radius: 14px; padding: 22px 14px; text-align: center; font-size: 13px; color: #C4B2A4; font-weight: 500;">{{ emptyLabel }}</div>
       </sc-if>
       <sc-if value="{{ hasResult }}" hint-placeholder-val="{{ false }}">
         <div style="border: 1.5px solid #EBDCCE; border-radius: 14px; background: #FFFDFA; padding: 12px 14px; font-size: 16px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; min-height: 52px;">{{ displayResult }}</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 12px; font-weight: 700; color: #A08D80;">{{ resultCountText }}</span>
-        </div>
         <button onClick="{{ copyResult }}" style="border: none; border-radius: 16px; background: {{ copyBg }}; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 900; letter-spacing: 0.06em; padding: 13px 16px; cursor: pointer; box-shadow: 0 4px 0 rgba(90, 50, 60, 0.22); transition: transform 0.08s, box-shadow 0.08s;" style-active="transform: translateY(3px); box-shadow: 0 1px 0 rgba(90, 50, 60, 0.22);">{{ copyLabel }}</button>
       </sc-if>
     </div>
@@ -271,10 +273,10 @@ class Component extends DCLogic {
       sub: 'もじかくし — 検索よけ・翻訳よけテキストメーカー',
       inputLabel: '入力テキスト', clearLabel: 'クリア', placeholder: 'ここにテキストを入れてね',
       invBadge: '不可視文字 {n}個入り', removeLabel: 'ゼロ幅スペースを削除', noInvLabel: '不可視文字なし ✓',
-      chars: '{n}文字', intervalLabel: '挿入間隔', seg1: '全文字間', seg2: 'ランダム',
+      beforeCount: '変換前 {n}文字', afterCount: '変換後 {n}文字 ＋ 不可視 {m}個', intervalLabel: '挿入間隔', seg1: '全文字間', seg2: 'ランダム',
       exclLabel: '除外オプション', chipSpace: 'スペース前後は入れない', chipUrl: 'URLには入れない', chipHash: 'ハッシュタグには入れない',
       convertLabel: '変換する ✦', resultLabel: '変換結果', visOff: '不可視を表示', visOn: '不可視を表示中 ·',
-      emptyLabel: 'ここに変換結果が表示されます', resultCount: '{n}文字 ＋ 不可視 {m}個',
+      emptyLabel: 'ここに変換結果が表示されます',
       copy: 'コピーする', copied: 'コピーしました ✓',
       noticeLabel: 'ご利用にあたって', noticeText: 'このツールは完全な検索回避・翻訳回避を保証するものではありません。各サービスの利用規約に従って使用してください。',
       supportLabel: '便利だったら、今後の小さなツール制作費に投げてもらえるとうれしいです', kofiLabel: 'Ko-fi で支援',
@@ -284,10 +286,10 @@ class Component extends DCLogic {
       sub: 'Mojikakushi — anti-search / anti-translate text maker',
       inputLabel: 'INPUT TEXT', clearLabel: 'Clear', placeholder: 'Paste your text here',
       invBadge: '{n} invisible chars inside', removeLabel: 'Remove zero-width spaces', noInvLabel: 'No invisible chars ✓',
-      chars: '{n} chars', intervalLabel: 'INSERTION INTERVAL', seg1: 'Between every char', seg2: 'Random',
+      beforeCount: 'Before {n} chars', afterCount: 'After {n} chars ＋ {m} invisible', intervalLabel: 'INSERTION INTERVAL', seg1: 'Between every char', seg2: 'Random',
       exclLabel: 'EXCLUSIONS', chipSpace: 'Skip around spaces', chipUrl: 'Skip URLs', chipHash: 'Skip hashtags',
       convertLabel: 'Convert ✦', resultLabel: 'RESULT', visOff: 'Show invisibles', visOn: 'Showing invisibles ·',
-      emptyLabel: 'Your converted text will appear here', resultCount: '{n} chars ＋ {m} invisible',
+      emptyLabel: 'Your converted text will appear here',
       copy: 'Copy', copied: 'Copied ✓',
       noticeLabel: 'PLEASE NOTE', noticeText: 'This tool does not guarantee complete evasion of search indexing or machine translation. Use it in accordance with each service\u2019s terms.',
       supportLabel: 'IF THIS TOOL HELPED YOU', kofiLabel: 'Support on Ko-fi',
@@ -297,10 +299,10 @@ class Component extends DCLogic {
       sub: '모지카쿠시 — 검색·번역 회피 텍스트 메이커',
       inputLabel: '입력 텍스트', clearLabel: '지우기', placeholder: '여기에 텍스트를 입력하세요',
       invBadge: '보이지 않는 문자 {n}개 포함', removeLabel: '제로 폭 공백 제거', noInvLabel: '보이지 않는 문자 없음 ✓',
-      chars: '{n}자', intervalLabel: '삽입 간격', seg1: '모든 문자 사이', seg2: '랜덤',
+      beforeCount: '변환 전 {n}자', afterCount: '변환 후 {n}자 ＋ 비가시 {m}개', intervalLabel: '삽입 간격', seg1: '모든 문자 사이', seg2: '랜덤',
       exclLabel: '제외 옵션', chipSpace: '공백 앞뒤 제외', chipUrl: 'URL 제외', chipHash: '해시태그 제외',
       convertLabel: '변환하기 ✦', resultLabel: '변환 결과', visOff: '비가시 문자 표시', visOn: '표시 중 ·',
-      emptyLabel: '변환 결과가 여기에 표시됩니다', resultCount: '{n}자 ＋ 비가시 {m}개',
+      emptyLabel: '변환 결과가 여기에 표시됩니다',
       copy: '복사하기', copied: '복사됨 ✓',
       noticeLabel: '이용 안내', noticeText: '이 도구는 완전한 검색·번역 회피를 보장하지 않습니다. 각 서비스의 이용약관에 따라 사용해 주세요.',
       supportLabel: '도움이 되었다면', kofiLabel: 'Ko-fi로 응원하기',
@@ -310,10 +312,10 @@ class Component extends DCLogic {
       sub: '文字隐藏 — 防搜索·防翻译文本生成器',
       inputLabel: '输入文本', clearLabel: '清空', placeholder: '在这里输入文本',
       invBadge: '含 {n} 个不可见字符', removeLabel: '删除零宽空格', noInvLabel: '无不可见字符 ✓',
-      chars: '{n}字', intervalLabel: '插入间隔', seg1: '每个字符之间', seg2: '随机',
+      beforeCount: '转换前 {n}字', afterCount: '转换后 {n}字 ＋ 不可见 {m}个', intervalLabel: '插入间隔', seg1: '每个字符之间', seg2: '随机',
       exclLabel: '排除选项', chipSpace: '空格前后不插入', chipUrl: '不插入URL', chipHash: '不插入话题标签',
       convertLabel: '转换 ✦', resultLabel: '转换结果', visOff: '显示不可见字符', visOn: '显示中 ·',
-      emptyLabel: '转换结果将显示在这里', resultCount: '{n}字 ＋ 不可见 {m}个',
+      emptyLabel: '转换结果将显示在这里',
       copy: '复制', copied: '已复制 ✓',
       noticeLabel: '使用须知', noticeText: '本工具不保证完全避开搜索或翻译。请遵守各服务的使用条款。',
       supportLabel: '如果对你有帮助', kofiLabel: '通过 Ko-fi 支持',
@@ -515,13 +517,13 @@ class Component extends DCLogic {
       invBadgeText: t.invBadge.replace('{n}', invisibleInputCount),
       removeLabel: t.removeLabel,
       noInvLabel: t.noInvLabel,
-      inputLenText: t.chars.replace('{n}', inputLen),
+      inputCountText: t.beforeCount.replace('{n}', inputLen),
       intervalLabel: t.intervalLabel,
       exclLabel: t.exclLabel,
       convertLabel: t.convertLabel,
       resultLabel: t.resultLabel,
       emptyLabel: t.emptyLabel,
-      resultCountText: t.resultCount.replace('{n}', resultLen).replace('{m}', zwCount),
+      resultCountText: t.afterCount.replace('{n}', resultLen).replace('{m}', zwCount),
       noticeLabel: t.noticeLabel,
       noticeText: t.noticeText,
       supportLabel: t.supportLabel,
